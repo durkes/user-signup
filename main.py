@@ -1,4 +1,5 @@
 from flask import Flask, request, redirect
+import re
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -47,6 +48,9 @@ form_html = """
                 margin: 0;
                 width: 200px;
             }}
+            .error {{
+                color: red;
+            }}
             button {{
                 margin-top: 12px;
                 padding: 6px;
@@ -60,21 +64,25 @@ form_html = """
             <div class="ffield">
                 <label for"username">Username:</label>
                 <input type="text" name="username" value="{0}" />
+                <span class="error">{1}</span>
             </div>
 
             <div class="ffield">
                 <label for"password">Password:</label>
                 <input type="password" name="password" value="{2}" />
+                <span class="error">{3}</span>
             </div>
 
             <div class="ffield">
                 <label for"verify">Verify Password:</label>
                 <input type="password" name="verify" value="{4}" />
+                <span class="error">{5}</span>
             </div>
 
             <div class="ffield">
                 <label for"email">Email (optional):</label>
                 <input type="text" name="email" value="{6}" />
+                <span class="error">{7}</span>
             </div>
 
             <div class="ffield">
@@ -101,7 +109,40 @@ def signup_page2():
     verify = request.form['verify']
     email = request.form['email']
 
-    return form_html.format(username, "", password, "", verify, "", email, "")
+    error = False
+    username_error = ""
+    password_error = ""
+    verify_error = ""
+    email_error = ""
+
+    if len(username) < 3:
+        error = True
+        username_error = "Must be at least 3 chars"
+
+    if re.match("^[\w-]*$", username) == None:
+        error = True
+        username_error = "Only use alphanumeric chars"
+
+    if len(password) < 3:
+        error = True
+        password_error = "Must be at least 3 chars"
+
+    if re.match("^[\S-]*$", password) == None:
+        error = True
+        password_error = "Do not use spaces"
+
+    if verify != password:
+        error = True
+        verify_error = "Passwords don't match"
+
+    if len(email) > 0 and re.match("(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email) == None:
+        error = True
+        email_error = "Invalid email address"
+
+    if error == False:
+        return redirect("/welcome?username=" + username)
+
+    return form_html.format(username, username_error, password, password_error, verify, verify_error, email, email_error)
 
 @app.route("/welcome")
 def welcome_page():
