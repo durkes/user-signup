@@ -1,110 +1,24 @@
 from flask import Flask, request, redirect
-import cgi
 import re
+import os
+import jinja2
 
+template_dir = os.path.join(os.path.dirname(__file__), 'templates')
+jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape=True)
 app = Flask(__name__)
 app.config['DEBUG'] = True
-
-welcome_html = """
-<html>
-    <head>
-        <title>Welcome</title>
-    </head>
-    <body>
-        <h2>Welcome, {0}!</h1>
-    </body>
-</html>
-"""
-
-form_html = """
-<!DOCTYPE html>
-
-<html>
-    <head>
-        <title>User Signup</title>
-        <style>
-            form {{
-                background-color: #eee;
-                padding: 20px;
-                margin: 0 auto;
-                width: 540px;
-                font: 14px sans-serif;
-                border-radius: 10px;
-            }}
-            h2 {{
-                margin: 0;
-                margin-bottom: 20px;
-                padding: 0;
-                font: 26px sans-serif;
-            }}
-            .ffield {{
-                display: block;
-                margin: 10px 0;
-            }}
-            label {{
-                width: 120px;
-                display: inline-block;
-            }}
-            input {{
-                margin: 0;
-                width: 200px;
-            }}
-            .error {{
-                color: red;
-            }}
-            button {{
-                margin-top: 12px;
-                padding: 6px;
-            }}
-        </style>
-    </head>
-    <body>
-        <form method="post" action="/signup">
-            <h2>Sign up</h1>
-
-            <div class="ffield">
-                <label for"username">Username:</label>
-                <input type="text" name="username" value="{0}" />
-                <span class="error">{1}</span>
-            </div>
-
-            <div class="ffield">
-                <label for"password">Password:</label>
-                <input type="password" name="password" value="{2}" />
-                <span class="error">{3}</span>
-            </div>
-
-            <div class="ffield">
-                <label for"verify">Verify Password:</label>
-                <input type="password" name="verify" value="{4}" />
-                <span class="error">{5}</span>
-            </div>
-
-            <div class="ffield">
-                <label for"email">Email (optional):</label>
-                <input type="text" name="email" value="{6}" />
-                <span class="error">{7}</span>
-            </div>
-
-            <div class="ffield">
-                <label></label>
-                <button type="submit">Submit</button>
-            </div>
-        </form>
-    </body>
-</html>
-"""
 
 @app.route("/")
 def index():
     return redirect("/signup")
 
 @app.route("/signup")
-def signup_page():
-    return form_html.format("", "", "", "", "", "", "", "", "")
+def signup():
+    template = jinja_env.get_template('signup_form.html')
+    return template.render()
 
 @app.route("/signup", methods=['POST'])
-def signup_page2():
+def signup_post():
     username = request.form['username']
     password = request.form['password']
     verify = request.form['verify']
@@ -147,11 +61,18 @@ def signup_page2():
     if error == False:
         return redirect("/welcome?username=" + username)
 
-    return form_html.format(cgi.escape(username, True), username_error, "", password_error, "", verify_error, cgi.escape(email, True), email_error)
+    template = jinja_env.get_template('signup_form.html')
+    return template.render(username=username,
+        username_error=username_error,
+        password_error=password_error,
+        verify_error=verify_error,
+        email=email,
+        email_error=email_error)
 
 @app.route("/welcome")
-def welcome_page():
+def welcome():
     username = request.args.get('username')
-    return welcome_html.format(cgi.escape(username, True))
+    template = jinja_env.get_template('welcome.html')
+    return template.render(username=username)
 
 app.run()

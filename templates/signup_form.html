@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>User Signup</title>
+  <style>
+    form {
+      background-color: #eee;
+      padding: 20px;
+      margin: 0 auto;
+      width: 540px;
+      font: 14px sans-serif;
+      border-radius: 10px;
+    }
+    h2 {
+      margin: 0;
+      margin-bottom: 20px;
+      padding: 0;
+      font: 26px sans-serif;
+    }
+    .ffield {
+      display: block;
+      margin: 10px 0;
+    }
+    label {
+      width: 120px;
+      display: inline-block;
+    }
+    input {
+      margin: 0;
+      width: 200px;
+    }
+    .error {
+      color: red;
+    }
+    button {
+      margin-top: 12px;
+      padding: 6px;
+    }
+  </style>
+</head>
+<body>
+  <form method="post" action="/signup">
+    <h2>Sign up</h1>
+
+    <div class="ffield">
+      <label for"username">Username:</label>
+      <input type="text" name="username" value="{{username}}" />
+      <span class="error">{{username_error}}</span>
+    </div>
+
+    <div class="ffield">
+      <label for"password">Password:</label>
+      <input type="password" name="password" value="" />
+      <span class="error">{{password_error}}</span>
+    </div>
+
+    <div class="ffield">
+      <label for"verify">Verify Password:</label>
+      <input type="password" name="verify" value="" />
+      <span class="error">{{verify_error}}</span>
+    </div>
+
+    <div class="ffield">
+      <label for"email">Email (optional):</label>
+      <input type="text" name="email" value="{{email}}" />
+      <span class="error">{{email_error}}</span>
+    </div>
+
+    <div class="ffield">
+      <label></label>
+      <button type="submit">Submit</button>
+    </div>
+  </form>
+</body>
+</html>
