@@ -1,4 +1,5 @@
 from flask import Flask, request, redirect
+import cgi
 import re
 
 app = Flask(__name__)
@@ -146,11 +147,11 @@ def signup_page2():
     if error == False:
         return redirect("/welcome?username=" + username)
 
-    return form_html.format(username, username_error, "", password_error, "", verify_error, email, email_error)
+    return form_html.format(cgi.escape(username, True), username_error, "", password_error, "", verify_error, cgi.escape(email, True), email_error)
 
 @app.route("/welcome")
 def welcome_page():
     username = request.args.get('username')
-    return welcome_html.format(username)
+    return welcome_html.format(cgi.escape(username, True))
 
 app.run()
