@@ -10,7 +10,7 @@ welcome_html = """
         <title>Welcome</title>
     </head>
     <body>
-        <h2>Welcome, {0}.</h1>
+        <h2>Welcome, {0}!</h1>
     </body>
 </html>
 """
@@ -146,7 +146,7 @@ def signup_page2():
     if error == False:
         return redirect("/welcome?username=" + username)
 
-    return form_html.format(username, username_error, password, password_error, verify, verify_error, email, email_error)
+    return form_html.format(username, username_error, "", password_error, "", verify_error, email, email_error)
 
 @app.route("/welcome")
 def welcome_page():
