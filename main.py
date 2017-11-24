@@ -115,17 +115,17 @@ def signup_page2():
     verify_error = ""
     email_error = ""
 
-    if len(username) < 3:
+    if len(username) < 3 or len(username) > 20:
         error = True
-        username_error = "Must be at least 3 chars"
+        username_error = "Must be between 3-20 chars"
 
     if re.match("^[\w-]*$", username) == None:
         error = True
         username_error = "Only use alphanumeric chars"
 
-    if len(password) < 3:
+    if len(password) < 3 or len(password) > 20:
         error = True
-        password_error = "Must be at least 3 chars"
+        password_error = "Must be between 3-20 chars"
 
     if re.match("^[\S-]*$", password) == None:
         error = True
@@ -134,6 +134,10 @@ def signup_page2():
     if verify != password:
         error = True
         verify_error = "Passwords don't match"
+
+    if len(email) > 20:
+        error = True
+        email_error = "Cannot be longer than 20 chars"
 
     if len(email) > 0 and re.match("(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email) == None:
         error = True
